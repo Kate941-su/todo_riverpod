@@ -48,7 +48,6 @@ class TodoListStateNotifier extends StateNotifier<List<Todo>> {
   void delete(Todo target) {
     // 指定したtodo以外のものをstateにする。
     state = state.where((todo) => todo.id != target.id).toList();
-    state = [...state];// このコードを加えないと再描画されない
   }
 
   // Todoリストの状態をトグルする
