@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'counter.dart';
+
 
 // 値（ここでは "Hello world"）を格納する「プロバイダ」を作成します。
 // プロバイダを使うことで値のモックやオーバーライドが可能になります。
-final helloWorldProvider = Provider((_) => 'Hello world');
-final counterProvider = StateProvider((ref) => 0);
 
 void main() {
   runApp(
@@ -31,20 +31,21 @@ class MyApp extends StatelessWidget {
 class Home extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final counter = ref.watch(counterProvider);
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('Example')),
-        body: Center(
+        body: const Center(
             child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(counter.state.toString()),
-          ],
-        )),
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Counter(),
+              ],
+            )),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            counter.state = counter.state + 1;
+            ref
+                .read(counterProvider.notifier)
+                .state++;
           },
           backgroundColor: Colors.black,
           child: const Icon(Icons.add),
