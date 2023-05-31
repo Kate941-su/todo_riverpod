@@ -19,11 +19,12 @@ class TodoListStateNotifier extends StateNotifier<List<Todo>> {
   // Todoリストに追加する
   // ステート自体もイミュータブルのため、state.add(todo)のような操作はできない
   void add({required String description}) {
+    final id =_uuid.v4();
     state = [
       ...state,
       Todo(
         id: _uuid.v4(),
-        description: description,
+        description: description + id,
       ),
     ];
   }
