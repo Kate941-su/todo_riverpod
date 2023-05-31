@@ -11,7 +11,7 @@ void main() {
     // プロバイダをウィジェットで利用するには、アプリ全体を
     // `ProviderScope` ウィジェットで囲む必要があります。
     // ここに各プロバイダのステート（状態）・値が格納されていきます。
-    ProviderScope(
+    const ProviderScope(
       child: MyApp(),
     ),
   );
@@ -19,6 +19,7 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(home: Home());
@@ -27,32 +28,26 @@ class MyApp extends StatelessWidget {
 
 // StatelessWidget の代わりに Riverpod の ConsumerWidget を継承します。
 
-
 class Home extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final String value = ref.watch(helloWorldProvider);
     StateController<int> counter = ref.watch(counterProvider.notifier);
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('Example')),
         body: Center(
-          child: Column (
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Consumer(builder: (context, ref, _) {
-                final count = ref.watch(counterProvider);
-                return Text(count.toString());
-              })
-            ],
-          )
-        ),
+            child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(counter.state.toString()),
+          ],
+        )),
         floatingActionButton: FloatingActionButton(
-          onPressed: (){
-            counter.state++;
+          onPressed: () {
+            counter.state = counter.state + 1;
           },
-          child: Icon(Icons.add),
           backgroundColor: Colors.black,
+          child: const Icon(Icons.add),
         ),
       ),
     );
