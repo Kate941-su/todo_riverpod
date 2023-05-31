@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
 class Home extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    StateController<int> counter = ref.watch(counterProvider.notifier);
+    final counter = ref.watch(counterProvider);
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('Example')),
