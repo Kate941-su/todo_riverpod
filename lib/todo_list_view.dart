@@ -9,25 +9,25 @@ class TodoListView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final todoListState = ref.watch(todoListStateProvider);
+    final todoListIsCompleteState = ref.watch(todoListStateProvider.select((value) {
+      return value.map((e) => e.isCompleted).toList();
+    }));
     final todoListStateNotifier = ref.watch(todoListStateProvider.notifier);
 
     return ListView.separated(
-      itemCount: todoListState.length,
+      itemCount: todoListIsCompleteState.length,
       itemBuilder: (context, index) {
         return Container(
           padding: const EdgeInsets.all(5),
           child: ListTile(
-            title: Text(
-              todoListState[index].description!,
+            title: const Text(
+              'Fixed',
             ),
             subtitle: Row(
               children: [
                 ElevatedButton(
                   child: const Text('delete'),
-                  onPressed: () {
-                    todoListStateNotifier.delete(todoListState[index]);
-                  },
+                  onPressed: () {},
                 ),
                 ElevatedButton(
                   child: const Text('edit'),
@@ -36,7 +36,7 @@ class TodoListView extends ConsumerWidget {
                 ElevatedButton(
                   child: const Text('complete'),
                   onPressed: () {
-                    todoListStateNotifier.toggle(todoListState[index].id!);
+                    todoListStateNotifier.toggle(ref.watch(todoListStateProvider.notifier).state[index].id!);
                   },
                 ),
               ],
