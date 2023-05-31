@@ -30,9 +30,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  cupertino_icons: ^1.0.2
   flutter_riverpod: ^2.3.6
   freezed: ^2.3.4
-  cupertino_icons: ^1.0.2
+  build_runner: ^2.4.4
+  freezed_annotation: ^2.2.0
+  json_serializable: ^6.7.0
+  uuid: ^3.0.4
 
 dev_dependencies:
   flutter_test:

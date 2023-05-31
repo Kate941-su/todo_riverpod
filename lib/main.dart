@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-// 値（ここでは "Hello world"）を格納する「プロバイダ」を作成します。
-// プロバイダを使うことで値のモックやオーバーライドが可能になります。
-final helloWorldProvider = Provider((_) => 'Hello world');
-final counterProvider = StateProvider((ref) => 0);
+import 'package:todo_riverpod/todo_list_provider.dart';
+import 'todo_list_filter_provider.dart';
+import 'uncompletedTodosCount.dart';
+import 'todo_list_filter_provider.dart';
 
 void main() {
   runApp(
-    // プロバイダをウィジェットで利用するには、アプリ全体を
-    // `ProviderScope` ウィジェットで囲む必要があります。
-    // ここに各プロバイダのステート（状態）・値が格納されていきます。
     ProviderScope(
       child: MyApp(),
     ),
@@ -19,40 +15,68 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(home: Home());
   }
 }
 
-// StatelessWidget の代わりに Riverpod の ConsumerWidget を継承します。
-
-
 class Home extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final String value = ref.watch(helloWorldProvider);
-    StateController<int> counter = ref.watch(counterProvider.notifier);
+    final todoListState = ref.watch(todoListStateProvider.notifier);
+    final uncompletedTodosCountState = ref.watch(uncompletedTodosCount);
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(title: const Text('Example')),
+        appBar: AppBar(title: Text('The remaining tasks $uncompletedTodosCountState')),
         body: Center(
-          child: Column (
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Consumer(builder: (context, ref, _) {
-                final count = ref.watch(counterProvider);
-                return Text(count.toString());
-              })
-            ],
-          )
+          child: ListView.separated(
+            itemCount: todoListState.state.length,
+            itemBuilder: (context, index) {
+              return Container(
+                  padding: const EdgeInsets.all(5),
+                  child: ListTile(
+                    title: Text(
+                      '${todoListState.state[index].description!}',
+                    ),
+                    subtitle: Row(
+                      children: [
+                        ElevatedButton(
+                          child: Text('delete'),
+                          onPressed: () {
+                            todoListState.delete(todoListState.state[index]);
+                          },
+                        ),
+                        ElevatedButton(
+                          child: Text('edit'),
+                          onPressed: () {},
+                        ),
+                        ElevatedButton(
+                          child: Text('complete'),
+                          onPressed: () {
+                            todoListState.toggle(todoListState.state[index].id!);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+            },
+            separatorBuilder: (context, index) {
+              return const Divider(
+                height: 0.5,
+              );
+            },
+          ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: (){
-            counter.state++;
+          onPressed: () {
+           todoListState.add(
+               description: "hello!"
+           );
           },
           child: Icon(Icons.add),
-          backgroundColor: Colors.black,
         ),
       ),
     );
